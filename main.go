@@ -8,30 +8,22 @@ import (
 	"strings"
 )
 
-func swap(arr []string, first int, second int) {
-	tmp := arr[first]
-	arr[first] = arr[second]
-	arr[second] = tmp
-}
-
-func separator(arr []string, left int, right int) int {
+func separator(arr []int, left int, right int) int {
 	var leader int
-	leader, _ = strconv.Atoi(arr[(right+left)/2])
+	leader = arr[(right+left)/2]
 	for left <= right {
 		var i int
-		for i, _ = strconv.Atoi(arr[left]); i < leader; {
+		for i = arr[left]; i < leader; {
 			left++
-			i, _ = strconv.Atoi(arr[left])
+			i = arr[left]
 		}
-
 		var j int
-		for j, _ = strconv.Atoi(arr[right]); j > leader; {
+		for j = arr[right]; j > leader; {
 			right--
-			j, _ = strconv.Atoi(arr[right])
+			j = arr[right]
 		}
-
 		if left <= right {
-			swap(arr, left, right)
+			arr[left], arr[right] = arr[right], arr[left]
 			left++
 			right--
 		}
@@ -39,7 +31,7 @@ func separator(arr []string, left int, right int) int {
 	return left
 }
 
-func quicksort(arr []string, left int, right int) {
+func quicksort(arr []int, left int, right int) {
 	if left < right {
 		p := separator(arr, left, right)
 		quicksort(arr, left, p-1)
@@ -48,7 +40,6 @@ func quicksort(arr []string, left int, right int) {
 }
 
 func main() {
-	// Самым первым аргументом всегда идет имя бинарника
 	if len(os.Args) == 1 {
 		fmt.Println("File doesn't specified")
 		fmt.Println("Use:")
@@ -58,11 +49,28 @@ func main() {
 
 	fname := os.Args[1]
 	myBytes, err := ioutil.ReadFile(fname)
+	var numbers []int
+	var sortedNumbers []int
+
 	if err != nil {
-		fmt.Println("Error occured while reading file")
+		fmt.Println("Error occured while reading file:")
+		fmt.Println(err)
+	} else {
+		str := string(myBytes)
+		numbersString := strings.Split(str, " ")
+
+		for i := 0; i < len(numbersString); i++ {
+			num, err := strconv.Atoi(numbersString[i])
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(0)
+			}
+			numbers = append(numbers, num)
+		}
+		sortedNumbers = make([]int, len(numbers))
+		copy(sortedNumbers, numbers)
+		quicksort(sortedNumbers, 0, len(sortedNumbers)-1)
+		fmt.Println(numbers)
+		fmt.Println(sortedNumbers)
 	}
-	str := string(myBytes)
-	numbers := strings.Split(str, " ")
-	quicksort(numbers, 0, len(numbers)-1)
-	fmt.Println(numbers)
 }
