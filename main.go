@@ -70,7 +70,6 @@ func main() {
 		sortedNumbers = make([]int, len(numbers))
 		copy(sortedNumbers, numbers)
 		quicksort(sortedNumbers, 0, len(sortedNumbers)-1)
-		fmt.Println(numbers)
 		fmt.Println(sortedNumbers)
 	}
 }
